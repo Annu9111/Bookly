@@ -1,4 +1,4 @@
-from fastapi import FastAPI,status
+from fastapi import FastAPI,status,HTTPException
 from pydantic import BaseModel
 from typing import List
 app= FastAPI()
@@ -62,7 +62,7 @@ class Book(BaseModel):
     
 
 @app.get("/Books",response_model=List[Book])
-async def get_all_book():
+async def get_all_book(): 
     return books
 
 @app.post("/Books",status_code=status.HTTP_201_CREATED)
@@ -74,11 +74,11 @@ async def create_a_book(Book_data:Book)->dict:
 
 @app.get("/Books/{Book_id}")
 async def get_a_book(book_id:int):
-    pass
+    for book in books:
+        if book["id"]==book_id:
+            return book
+    return HTTPException(status_code=404,detail="id not found")
 
-@app.get("/Books")
-async def get_all_book()->dict:
-    pass
 
 @app.put("/Books/{Book_id}")
 async def update_book(Book_id):
