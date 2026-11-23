@@ -60,6 +60,13 @@ class Book(BaseModel):
     page_count:int
     language: str
     
+class Book_update_model(BaseModel):
+    title: str
+    author: str
+    publisher: str 
+    page_count:int
+    language: str
+    
 
 @app.get("/Books",response_model=List[Book])
 async def get_all_book(): 
@@ -73,17 +80,30 @@ async def create_a_book(Book_data:Book)->dict:
     
 
 @app.get("/Books/{Book_id}")
-async def get_a_book(book_id:int):
+async def get_a_book(Book_id:int):
     for book in books:
-        if book["id"]==book_id:
+        if book["id"]==Book_id:
             return book
-    return HTTPException(status_code=404,detail="id not found")
+    raise HTTPException(status_code=404,detail="id not found")
 
 
-@app.put("/Books/{Book_id}")
-async def update_book(Book_id):
-    pass
+@app.patch("/Books/{Book_id}")
+async def update_book(Book_id:int,book_update_data :Book_update_model):
+    for book in books:
+        if book["id"]==Book_id:
+            book['title'] = book_update_data.title
+            book["author"] = book_update_data.author
+            book["publisher"] = book_update_data.publisher
+            book["page_count"] = book_update_data.page_count
+            book["language"] = book_update_data.language
+            return book
+    raise HTTPException(status_code=404,detail="Book id not found")
+
 
 @app.delete("/Book/{Book_id}")
-async def delete_book(Book_id):
-    pass
+async def delete_book(Book_id:int):
+    for book in books:
+        if book["id"]==Book_id:
+            books.remove(book)
+    raise HTTPException(status_code=404,detail="id not found")
+
