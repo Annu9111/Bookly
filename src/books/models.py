@@ -1,6 +1,6 @@
 
 from sqlmodel import SQLModel, Field
-from datetime import datetime
+from datetime import datetime,date
 import sqlalchemy.dialects.postgresql as pg
 import uuid
 
@@ -16,7 +16,7 @@ class Book(SQLModel, table=True):
     title: str
     author: str
     publisher: str
-    published_date: str
+    published_date: date
     page_count: int
     language: str
 
